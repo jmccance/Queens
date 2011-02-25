@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Fri Feb 25 11:24:34 2011
-// Last modified: Fri Feb 25 14:42:51 2011
+// Last modified: Fri Feb 25 15:24:02 2011
 //--------------------------------------------------------------------------
 
 #ifndef __QState_h__
@@ -24,6 +24,8 @@ class QState {
             moving the queen in the designated row to the designated
             column.
         */
+
+        int getScore( );
 
         void generateSuccessors(std::vector<QState>& successors);
         /*
@@ -46,6 +48,12 @@ class QState {
     private:
         std::vector<unsigned int> _state;
         unsigned int _size;
+        unsigned int _score;
+
+        int countAttacks( );
+        /*
+            Returns the number of attacking pairs on this board.
+        */
 };
 
 #endif

@@ -1,28 +1,20 @@
 CC=g++
 CFLAGS=-g -Wall
-SRCS=fourdoku.cpp FDState.h FDState.cpp FDNode.h FDNode.cpp FDAction.h FDAction.cpp search.h search.cpp
-OBJS=fourdoku.o FDState.o FDAction.o FDNode.o search.o
+SRCS=queens.cpp QState.cpp QState.h
+OBJS=queens.o QState.o
+TARGET=queens
 
-all:fourdoku
+all:queens
 
-fourdoku:fourdoku.o FDAction.o FDState.o FDNode.o search.o
-	$(CC) $(LFLAGS) $(OBJS) -o fourdoku
+queens:queens.o QState.o
+	$(CC) $(LFLAGS) $(OBJS) -o $(TARGET)
 
-fourdoku.o:fourdoku.cpp
-	$(CC) $(CFLAGS) -c fourdoku.cpp
+queens.o:queens.cpp
+	$(CC) $(CFLAGS) -c queens.cpp
 
-FDAction.o:FDAction.h FDAction.cpp
-	$(CC) $(CFLAGS) -c FDAction.cpp
-
-FDState.o:FDState.h FDState.cpp
-	$(CC) $(CFLAGS) -c FDState.cpp
-
-FDNode.o:FDNode.h FDNode.cpp
-	$(CC) $(CFLAGS) -c FDNode.cpp
-
-search.o:search.h search.cpp
-	$(CC) $(CFLAGS) -c search.cpp
+QState.o:QState.cpp QState.h
+	$(CC) $(CFLAGS) -c QState.cpp
 
 clean:
-	rm -rf $(OBJS) fourdoku
+	rm -rf $(OBJS) $(TARGET)
 

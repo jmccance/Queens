@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Fri Feb 25 14:52:19 2011
-// Last modified: Fri Feb 25 15:00:40 2011
+// Last modified: Fri Feb 25 15:23:32 2011
 //--------------------------------------------------------------------------
 
 #include <iostream>
@@ -22,8 +22,10 @@ QState::QState(int size)
     srand48(time(NULL));
     for(int i = 0; i < _size; ++i)
     {
-        _state[i] = lrand48( ) % _size;
+        _state.push_back(lrand48( ) % _size);
     }
+
+    _score = countAttacks( );
 }
 
 //--------------------------------------------------------------------------
@@ -34,10 +36,19 @@ QState::QState(QState& parent, unsigned int row, unsigned int col)
     _state = parent._state;
 
     _state[col] = row;
+
+    _score = countAttacks( );
 }
 
 //--------------------------------------------------------------------------
 // PUBLIC METHODS
+//--------------------------------------------------------------------------
+
+int QState::getScore( )
+{
+    return _score;
+}
+
 //--------------------------------------------------------------------------
 
 void QState::generateSuccessors(std::vector<QState>& successors)
@@ -63,7 +74,8 @@ void QState::print( )
         for (int col = 0; col < _size; ++col)
         {
             char ch = '.';
-            if (_state[col] = row);
+
+            if (_state[col] == row)
             {
                 ch = 'Q';
             }
@@ -73,4 +85,30 @@ void QState::print( )
 
         std::cout << std::endl;
     }
+}
+
+
+//--------------------------------------------------------------------------
+// PRIVATE METHODS
+//--------------------------------------------------------------------------
+
+int QState::countAttacks( )
+{
+    int attackCount = 0;
+
+    for (unsigned int i = 0; i < _size - 1; ++i)
+    {
+        for (unsigned int j = i + 1; j < _size; ++j)
+        {
+            int row_diff = i - j;
+            int col_diff = _state[i] - _state[j];
+
+            if (row_diff*row_diff == col_diff*col_diff)
+            {
+                attackCount++;
+            }
+        }
+    }
+
+    return attackCount;
 }
