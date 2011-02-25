@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Fri Feb 25 14:52:19 2011
-// Last modified: Fri Feb 25 18:26:05 2011
+// Last modified: Fri Feb 25 18:57:00 2011
 //--------------------------------------------------------------------------
 
 #include <iostream>
@@ -31,7 +31,7 @@ QState::QState(int size)
 
     _size = size;
 
-    for(int i = 0; i < _size; ++i)
+    for(unsigned int i = 0; i < _size; ++i)
     {
         _state.push_back(lrand48( ) % _size);
     }
@@ -62,15 +62,17 @@ int QState::getScore( )
 
 //--------------------------------------------------------------------------
 
-void QState::generateSuccessors(std::vector<QState*>& successors)
+void QState::generateSuccessors(std::vector<QState>& successors)
 {
     for (unsigned int col = 0; col < _size; ++col)
     {
         for (unsigned int row = 0; row < _size; ++row)
         {
+            // Only generate successor if it is not identical to the
+            // parent.
             if (_state[col] != row)
             {
-                QState* state = new QState(*this, row, col);
+                QState state(*this, row, col);
                 successors.push_back(state);
             }
         }
@@ -81,9 +83,9 @@ void QState::generateSuccessors(std::vector<QState*>& successors)
 
 void QState::print( )
 {
-    for (int row = 0; row < _size; ++row)
+    for (unsigned int row = 0; row < _size; ++row)
     {
-        for (int col = 0; col < _size; ++col)
+        for (unsigned int col = 0; col < _size; ++col)
         {
             char ch = '-';
 

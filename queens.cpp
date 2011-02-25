@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Thu Feb 24 12:54:40 2011
-// Last modified: Fri Feb 25 18:45:34 2011
+// Last modified: Fri Feb 25 18:49:31 2011
 //
 //--------------------------------------------------------------------------
 
@@ -81,36 +81,28 @@ void hillClimbSearch(QState& state)
 
     while (state.getScore( ) > 0 and not atPlateau)
     {
-        std::vector<QState*> successors;
+        std::vector<QState> successors;
 
         state.generateSuccessors(successors);
 
-        QState* smallest = *successors.begin( );
-        for (std::vector<QState*>::iterator it = successors.begin( );
+        QState smallest = *successors.begin( );
+        for (std::vector<QState>::iterator it = successors.begin( );
                 it != successors.end( );
                 ++it)
         {
-            if ((*it)->getScore( ) < smallest->getScore( ))
+            if (it->getScore( ) < smallest.getScore( ))
             {
                 smallest = *it;
             }
         }
 
-        if (smallest->getScore( ) >= state.getScore( ))
+        if (smallest.getScore( ) >= state.getScore( ))
         {
             atPlateau = true;
         }
         else
         {
-            state = *smallest;
-        }
-
-        // Clean up our pointer mess
-        for (std::vector<QState*>::iterator it = successors.begin( );
-                it != successors.end( );
-                ++it)
-        {
-            delete *it;
+            state = smallest;
         }
     }
 }
