@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Fri Feb 25 14:52:19 2011
-// Last modified: Fri Feb 25 15:23:32 2011
+// Last modified: Fri Feb 25 18:26:05 2011
 //--------------------------------------------------------------------------
 
 #include <iostream>
@@ -12,14 +12,25 @@
 #include "QState.h"
 
 //--------------------------------------------------------------------------
+// INITIALIZATION
+//--------------------------------------------------------------------------
+
+bool QState::_initialized = false;
+
+//--------------------------------------------------------------------------
 // CONSTRUCTORS
 //--------------------------------------------------------------------------
 
 QState::QState(int size)
 {
+    if (not _initialized)
+    {
+        srand48(time(NULL));
+        _initialized = true;
+    }
+
     _size = size;
 
-    srand48(time(NULL));
     for(int i = 0; i < _size; ++i)
     {
         _state.push_back(lrand48( ) % _size);
@@ -51,7 +62,7 @@ int QState::getScore( )
 
 //--------------------------------------------------------------------------
 
-void QState::generateSuccessors(std::vector<QState>& successors)
+void QState::generateSuccessors(std::vector<QState*>& successors)
 {
     for (unsigned int col = 0; col < _size; ++col)
     {
@@ -59,7 +70,8 @@ void QState::generateSuccessors(std::vector<QState>& successors)
         {
             if (_state[col] != row)
             {
-                successors.push_back(QState(*this, row, col));
+                QState* state = new QState(*this, row, col);
+                successors.push_back(state);
             }
         }
     }
@@ -73,7 +85,7 @@ void QState::print( )
     {
         for (int col = 0; col < _size; ++col)
         {
-            char ch = '.';
+            char ch = '-';
 
             if (_state[col] == row)
             {
@@ -100,12 +112,21 @@ int QState::countAttacks( )
     {
         for (unsigned int j = i + 1; j < _size; ++j)
         {
-            int row_diff = i - j;
-            int col_diff = _state[i] - _state[j];
-
-            if (row_diff*row_diff == col_diff*col_diff)
+            // Are the queens in the same row?
+            if (_state[i] == _state[j])
             {
-                attackCount++;
+                ++attackCount;
+            }
+            else
+            {
+                // Are the queens on a shared diagonal?
+                int row_diff = i - j;
+                int col_diff = _state[i] - _state[j];
+
+                if (row_diff*row_diff == col_diff*col_diff)
+                {
+                    ++attackCount;
+                }
             }
         }
     }

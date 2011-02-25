@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Fri Feb 25 11:24:34 2011
-// Last modified: Fri Feb 25 15:24:02 2011
+// Last modified: Fri Feb 25 18:08:03 2011
 //--------------------------------------------------------------------------
 
 #ifndef __QState_h__
@@ -27,7 +27,7 @@ class QState {
 
         int getScore( );
 
-        void generateSuccessors(std::vector<QState>& successors);
+        void generateSuccessors(std::vector<QState*>& successors);
         /*
             Generate a list of successors of self and store it in the
             provide vector.
@@ -46,6 +46,8 @@ class QState {
         */
 
     private:
+        static bool _initialized;
+
         std::vector<unsigned int> _state;
         unsigned int _size;
         unsigned int _score;
