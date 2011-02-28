@@ -3,10 +3,11 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Fri Feb 25 14:52:19 2011
-// Last modified: Fri Feb 25 18:57:00 2011
+// Last modified: Mon Feb 28 18:15:09 2011
 //--------------------------------------------------------------------------
 
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 
 #include "QState.h"
@@ -25,8 +26,13 @@ QState::QState(int size)
 {
     if (not _initialized)
     {
-        srand48(time(NULL));
+        std::ifstream urandom;
+        long seed;
+        urandom.open("/dev/urandom", std::ios::in | std::ios::binary);
+        urandom.read(reinterpret_cast<char*>(&seed), sizeof(seed));
+        srand48(seed);
         _initialized = true;
+        urandom.close( );
     }
 
     _size = size;

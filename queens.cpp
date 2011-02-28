@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Thu Feb 24 12:54:40 2011
-// Last modified: Mon Feb 28 12:47:25 2011
+// Last modified: Mon Feb 28 17:25:08 2011
 //
 //--------------------------------------------------------------------------
 
@@ -82,25 +82,26 @@ int main(int argc, char* argv[])
     //... Run the hill-climbing search
     QState state(boardDimension);
 
-    while (state.getScore( ) > 0 and useRestarts)
+    do
     {
         state = QState(boardDimension);
         hillClimbSearch(state);
         ++restartCount;
     }
+    while (state.getScore( ) > 0 and useRestarts);
 
     //... Report results
     if (not quietMode)
     {
         state.print( );
-
-        // Only print attack count if we weren't using restarts
-        if (not useRestarts)
-        {
-            std::cout << "Attacking pairs: " << state.getScore( ) << std::endl;
-        }
     }
     
+    // Only print attack count if we weren't using restarts
+    if (not useRestarts)
+    {
+        std::cout << "Attacking pairs: " << state.getScore( ) << std::endl;
+    }
+
     // Only pay attention to printRestartCounts if we were actually
     // doing restarts.
     if (printRestartCounts and useRestarts)

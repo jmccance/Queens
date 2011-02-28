@@ -5,6 +5,7 @@ OBJS=queens.o QState.o
 TARGET=queens
 
 all:queens
+	chmod u+x runTrials.sh
 
 queens:queens.o QState.o
 	$(CC) $(LFLAGS) $(OBJS) -o $(TARGET)

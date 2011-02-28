@@ -4,6 +4,8 @@ To build `queens', run:
 
     make
 
+This will construct the executable and ensure that runTrials.sh has the correct permissions.
+
 = USAGE =
 
 The default behavior will perform a hill-climbing search of the N-queens
@@ -25,3 +27,10 @@ get usage instructions by running `queens -?'.
 Note that queens is fairly stupid in its options checking, so please
 only feed it integers when using the -d option. Also note that board
 sizes over ~20 have the potential to run for quite awhile.
+
+= RUNNING TRIALS =
+
+The bash script runTrials.sh will run `queens' 100 times without
+restarts and 50 times with restarts and report the number of plateaux
+hit in the first case and the number of restarts required on average in
+the second case.
