@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Thu Feb 24 12:54:40 2011
-// Last modified: Mon Feb 28 11:19:07 2011
+// Last modified: Mon Feb 28 12:47:25 2011
 //
 //--------------------------------------------------------------------------
 
@@ -19,6 +19,7 @@
 //--------------------------------------------------------------------------
 
 void hillClimbSearch(QState& startState);
+void printUsage( );
 
 //--------------------------------------------------------------------------
 // Program Main
@@ -26,17 +27,20 @@ void hillClimbSearch(QState& startState);
 
 int main(int argc, char* argv[])
 {
+    //... Option flags
     bool useRestarts = false;
     bool quietMode = false;
     bool printRestartCounts = false;
 
+    //... Program parameters
     unsigned int boardDimension = 8;
     int restartCount = 0;
 
+    //... Process command-line options
     bool doneGettingOptions = false;
     while (not doneGettingOptions)
     {
-        char optCh = getopt(argc, argv, "cqrd:");
+        char optCh = getopt(argc, argv, "cqrd:?");
         if (optCh == -1)
         {
             doneGettingOptions = true;
@@ -67,10 +71,15 @@ int main(int argc, char* argv[])
                     exit(1);
                     }
                     break;
+                case '?':
+                default:
+                    printUsage( );
+                    exit(1);
             }
         }
     }
 
+    //... Run the hill-climbing search
     QState state(boardDimension);
 
     while (state.getScore( ) > 0 and useRestarts)
@@ -80,6 +89,7 @@ int main(int argc, char* argv[])
         ++restartCount;
     }
 
+    //... Report results
     if (not quietMode)
     {
         state.print( );
@@ -115,7 +125,7 @@ void hillClimbSearch(QState& state)
 
         state.generateSuccessors(successors);
 
-        // Determine the smallest successor
+        //... Determine the smallest successor
         QState smallest = *successors.begin( );
         for (std::vector<QState>::iterator it = successors.begin( );
                 it != successors.end( );
@@ -127,8 +137,8 @@ void hillClimbSearch(QState& state)
             }
         }
 
-        // Check for plateaux. If we're not at one, set state to the
-        // smallest successor.
+        //... Check for plateaux.
+        // If we're not at one, set state to the smallest successor.
         if (smallest.getScore( ) >= state.getScore( ))
         {
             atPlateau = true;
@@ -138,4 +148,19 @@ void hillClimbSearch(QState& state)
             state = smallest;
         }
     }
+}
+
+//--------------------------------------------------------------------------
+
+void printUsage( )
+{
+    std::cout << "Usage: queens [-rcq?] [-d N]" << std::endl;
+    std::cout << "\t-r\tUse random restarts to find solution" << std::endl;
+    std::cout << "\t-c\tIf using random restarts, print number of" << std::endl;
+    std::cout << "\t  \trestarts required to reach target" << std::endl;
+    std::cout << "\t-q\tSuppress printing the board and number of" << std::endl;
+    std::cout << "\t  \tattacking queens" << std::endl;
+    std::cout << "\t-d N\tSets the board dimension and number of" << std::endl;
+    std::cout << "\t  \tqueens to N (Default = 8)" << std::endl;
+    std::cout << "\t-?\tPrint this usage message" << std::endl;
 }
