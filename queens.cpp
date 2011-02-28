@@ -3,76 +3,106 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Thu Feb 24 12:54:40 2011
-// Last modified: Fri Feb 25 18:49:31 2011
+// Last modified: Mon Feb 28 11:19:07 2011
 //
 //--------------------------------------------------------------------------
 
 #include <iostream>
 #include <vector>
 
+#include <unistd.h>
+
 #include "QState.h"
 
+//--------------------------------------------------------------------------
 // Operation prototypes
 //--------------------------------------------------------------------------
 
 void hillClimbSearch(QState& startState);
 
 //--------------------------------------------------------------------------
+// Program Main
+//--------------------------------------------------------------------------
 
 int main(int argc, char* argv[])
 {
-    const int NUM_TRIALS_WITHOUT_RESTARTS = 100;
-    const int NUM_TRIALS_WITH_RESTARTS = 50;
+    bool useRestarts = false;
+    bool quietMode = false;
+    bool printRestartCounts = false;
 
-    //... Run a set of trials without restarts and count the failures.
-    int failureCount = 0;
-    for (int i = 0; i < NUM_TRIALS_WITHOUT_RESTARTS; ++i)
+    unsigned int boardDimension = 8;
+    int restartCount = 0;
+
+    bool doneGettingOptions = false;
+    while (not doneGettingOptions)
     {
-        QState state(8);
+        char optCh = getopt(argc, argv, "cqrd:");
+        if (optCh == -1)
+        {
+            doneGettingOptions = true;
+        }
+        else
+        {
+            switch (optCh)
+            {
+                case 'c':
+                    printRestartCounts = true;
+                    break;
 
+                case 'q':
+                    quietMode = true;
+                    break;
+
+                case 'r':
+                    useRestarts = true;
+                    break;
+
+                case 'd':
+                    boardDimension = atoi(optarg);
+                    if (boardDimension == 2 or boardDimension == 3)
+                    {
+                    std::cerr <<
+                        "The 2- and 3-queens problems have zero solutions."
+                        << std::endl;
+                    exit(1);
+                    }
+                    break;
+            }
+        }
+    }
+
+    QState state(boardDimension);
+
+    while (state.getScore( ) > 0 and useRestarts)
+    {
+        state = QState(boardDimension);
         hillClimbSearch(state);
-
-        if (state.getScore( ) > 0)
-        {
-            ++failureCount;
-        }
+        ++restartCount;
     }
 
-    std::cout << "Searches that hit plateaux: " << failureCount << std::endl;
-
-    //... Run a set of trials WITH restarts and count the average number
-    //    of restarts per search.
-    int searchCount = 0;
-    for (int i = 0; i < NUM_TRIALS_WITH_RESTARTS; ++i)
+    if (not quietMode)
     {
-        QState state(8);
-        int lastScore = -1;
+        state.print( );
 
-        while (state.getScore( ) > 0)
+        // Only print attack count if we weren't using restarts
+        if (not useRestarts)
         {
-            hillClimbSearch(state);
-            ++searchCount;
-
-            if (state.getScore( ) == lastScore)
-            {
-                state = QState(8);
-                lastScore = -1;
-            }
-            else
-            {
-                lastScore = state.getScore( );
-            }
+            std::cout << "Attacking pairs: " << state.getScore( ) << std::endl;
         }
     }
-
-    std::cout << "Average restarts per search: " <<
-            (float)searchCount/NUM_TRIALS_WITH_RESTARTS << std::endl;
+    
+    // Only pay attention to printRestartCounts if we were actually
+    // doing restarts.
+    if (printRestartCounts and useRestarts)
+    {
+        std::cout << "Restarts required: " << restartCount << std::endl;
+    }
 
     return 0;
 }
 
 //--------------------------------------------------------------------------
-// OPERATION DEFINITIONS
+// Operation Definitions
 //--------------------------------------------------------------------------
 
 void hillClimbSearch(QState& state)
@@ -85,6 +115,7 @@ void hillClimbSearch(QState& state)
 
         state.generateSuccessors(successors);
 
+        // Determine the smallest successor
         QState smallest = *successors.begin( );
         for (std::vector<QState>::iterator it = successors.begin( );
                 it != successors.end( );
@@ -96,6 +127,8 @@ void hillClimbSearch(QState& state)
             }
         }
 
+        // Check for plateaux. If we're not at one, set state to the
+        // smallest successor.
         if (smallest.getScore( ) >= state.getScore( ))
         {
             atPlateau = true;
