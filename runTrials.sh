@@ -2,13 +2,14 @@
 
 NUM_TRIALS_WITHOUT_RESTARTS=100
 NUM_TRIALS_WITH_RESTARTS=50
+DIM=8
 plateauxCount=0
 restartCount=0
 
 i=0
 while ((i < NUM_TRIALS_WITHOUT_RESTARTS));
 do
-    attacks=$( ./queens -q | awk 'BEGIN { FS = " " } ; { print $3 }' )
+    attacks=$( ./queens -q -d $DIM | awk 'BEGIN { FS = " " } ; { print $3 }' )
     if [ $attacks -ne 0 ]
     then
         let plateauxCount++
@@ -20,7 +21,7 @@ done;
 i=0
 while ((i < NUM_TRIALS_WITH_RESTARTS));
 do
-    restarts=$( ./queens -qrc | awk 'BEGIN { FS = " " } ; { print $3 }' )
+    restarts=$( ./queens -qr -d $DIM | awk 'BEGIN { FS = " " } ; { print $3 }' )
     restartCount=$(($restartCount + $restarts))
     let i++
 done;

@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Fri Feb 25 11:24:34 2011
-// Last modified: Fri Feb 25 18:48:05 2011
+// Last modified: Tue Mar  1 11:55:27 2011
 //--------------------------------------------------------------------------
 
 #ifndef __QState_h__
@@ -13,6 +13,13 @@
 
 class QState {
     public:
+        QState( );
+        /*
+            Generates a board of size zero.
+            Used when you want to create a QState but don't need to
+            initialize it yet.
+        */
+
         QState(int size);
         /*
             Generates a size x size QState with a random start state.
@@ -36,7 +43,7 @@ class QState {
             push_back( ). Refer to
         */
 
-        void print( );
+        void printBoard( );
         /*
             Pretty-prints the state. E.g., this size-4 board
             . Q . .

@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Fri Feb 25 14:52:19 2011
-// Last modified: Mon Feb 28 18:15:09 2011
+// Last modified: Mon Feb 28 19:04:42 2011
 //--------------------------------------------------------------------------
 
 #include <iostream>
@@ -22,10 +22,21 @@ bool QState::_initialized = false;
 // CONSTRUCTORS
 //--------------------------------------------------------------------------
 
+QState::QState( )
+{
+    _size = 0;
+    _score = 0;
+}
+
+//--------------------------------------------------------------------------
+
 QState::QState(int size)
 {
     if (not _initialized)
     {
+        // We use /dev/urandom in order to allow for running the program
+        // many, many times in a very short span without horrific
+        // collision issues.
         std::ifstream urandom;
         long seed;
         urandom.open("/dev/urandom", std::ios::in | std::ios::binary);
@@ -87,7 +98,7 @@ void QState::generateSuccessors(std::vector<QState>& successors)
 
 //--------------------------------------------------------------------------
 
-void QState::print( )
+void QState::printBoard( )
 {
     for (unsigned int row = 0; row < _size; ++row)
     {

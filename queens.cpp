@@ -3,7 +3,7 @@
 //
 // Created by: Joel S. McCance
 // Creation date: Thu Feb 24 12:54:40 2011
-// Last modified: Mon Feb 28 17:25:08 2011
+// Last modified: Mon Feb 28 19:04:13 2011
 //
 //--------------------------------------------------------------------------
 
@@ -19,7 +19,15 @@
 //--------------------------------------------------------------------------
 
 void hillClimbSearch(QState& startState);
+/*
+    Takes a QState and performs a basic hill-climbing search on it until
+    either a goal-state is reached or a plateau is reached.
+*/
+
 void printUsage( );
+/*
+    Prints usage instructions to std::cout
+*/
 
 //--------------------------------------------------------------------------
 // Program Main
@@ -30,9 +38,9 @@ int main(int argc, char* argv[])
     //... Option flags
     bool useRestarts = false;
     bool quietMode = false;
-    bool printRestartCounts = false;
 
     //... Program parameters
+    QState state;
     unsigned int boardDimension = 8;
     int restartCount = 0;
 
@@ -40,7 +48,7 @@ int main(int argc, char* argv[])
     bool doneGettingOptions = false;
     while (not doneGettingOptions)
     {
-        char optCh = getopt(argc, argv, "cqrd:?");
+        char optCh = getopt(argc, argv, "qrd:?");
         if (optCh == -1)
         {
             doneGettingOptions = true;
@@ -49,10 +57,6 @@ int main(int argc, char* argv[])
         {
             switch (optCh)
             {
-                case 'c':
-                    printRestartCounts = true;
-                    break;
-
                 case 'q':
                     quietMode = true;
                     break;
@@ -80,8 +84,6 @@ int main(int argc, char* argv[])
     }
 
     //... Run the hill-climbing search
-    QState state(boardDimension);
-
     do
     {
         state = QState(boardDimension);
@@ -91,22 +93,19 @@ int main(int argc, char* argv[])
     while (state.getScore( ) > 0 and useRestarts);
 
     //... Report results
+
     if (not quietMode)
     {
-        state.print( );
+        state.printBoard( );
     }
     
-    // Only print attack count if we weren't using restarts
-    if (not useRestarts)
-    {
-        std::cout << "Attacking pairs: " << state.getScore( ) << std::endl;
-    }
-
-    // Only pay attention to printRestartCounts if we were actually
-    // doing restarts.
-    if (printRestartCounts and useRestarts)
+    if (useRestarts)
     {
         std::cout << "Restarts required: " << restartCount << std::endl;
+    }
+    else
+    {
+        std::cout << "Attacking pairs: " << state.getScore( ) << std::endl;
     }
 
     return 0;
@@ -157,8 +156,6 @@ void printUsage( )
 {
     std::cout << "Usage: queens [-rcq?] [-d N]" << std::endl;
     std::cout << "\t-r\tUse random restarts to find solution" << std::endl;
-    std::cout << "\t-c\tIf using random restarts, print number of" << std::endl;
-    std::cout << "\t  \trestarts required to reach target" << std::endl;
     std::cout << "\t-q\tSuppress printing the board and number of" << std::endl;
     std::cout << "\t  \tattacking queens" << std::endl;
     std::cout << "\t-d N\tSets the board dimension and number of" << std::endl;

@@ -15,8 +15,6 @@ get usage instructions by running `queens -?'.
 
     queens [-rcq?] [-d N]
         -r      Use random restarts to find solution
-        -c      If using random restarts, print number of
-                restarts required to reach target
         -q      Suppress printing the board and number of
                 attacking queens
         -d N	Sets the board dimension and number of
@@ -26,11 +24,14 @@ get usage instructions by running `queens -?'.
 
 Note that queens is fairly stupid in its options checking, so please
 only feed it integers when using the -d option. Also note that board
-sizes over ~20 have the potential to run for quite awhile.
+sizes over ~20 tend to have rather long running times.
 
-= RUNNING TRIALS =
+= RESULTS =
 
-The bash script runTrials.sh will run `queens' 100 times without
-restarts and 50 times with restarts and report the number of plateaux
-hit in the first case and the number of restarts required on average in
-the second case.
+Data for 100 trials without restarts and 50 trials with restarts can be
+found in without_restarts.txt and with_restarts.txt, respectively.
+
+Without restarts, the algorithm hit local maxima 81 times.
+
+With restarts, the algorithm required an average of 6.78 restarts to
+find the solution.
