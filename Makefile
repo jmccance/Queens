@@ -1,20 +1,16 @@
 CC=g++
 CFLAGS=-g -Wall
-SRCS=queens.cpp QState.cpp QState.h
 OBJS=queens.o QState.o
 TARGET=queens
 
-all:queens
+all:$(TARGET)
 	chmod u+x runTrials.sh
 
-queens:queens.o QState.o
-	$(CC) $(LFLAGS) $(OBJS) -o $(TARGET)
+queens: QState.o
 
-queens.o:queens.cpp
-	$(CC) $(CFLAGS) -c queens.cpp
+queens.o: QState.h
 
-QState.o:QState.cpp QState.h
-	$(CC) $(CFLAGS) -c QState.cpp
+QState.o: Qstate.h
 
 clean:
 	rm -rf $(OBJS) $(TARGET)
