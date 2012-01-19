@@ -10,8 +10,8 @@ This will construct the executable and ensure that runTrials.sh has the correct 
 
 The default behavior will perform a hill-climbing search of the N-queens
 problem and output the resultant board and the number of attacking
-queens. Full usage instructions for `queens' are as below. You can also
-get usage instructions by running `queens -?'.
+queens. Full usage instructions for `queens` are as below. You can also
+get usage instructions by running `queens -?`.
 
         queens [-rcq?] [-d N]
             -r      Use random restarts to find solution
